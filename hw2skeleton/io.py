@@ -18,11 +18,12 @@ def read_active_sites(dir):
 
         active_sites.append(read_active_site(filepath))
 
-    print("Read in %d active sites"%len(active_sites))
+    print("Read in %d active sites" % len(active_sites))
 
     return active_sites
 
 
+# modified to only read the first chain of a PDB
 def read_active_site(filepath):
     """
     Read in a single active site given a PDB file
@@ -34,7 +35,7 @@ def read_active_site(filepath):
     name = os.path.splitext(basename)
 
     if name[1] != ".pdb":
-        raise IOError("%s is not a PDB file"%filepath)
+        raise IOError("%s is not a PDB file" % filepath)
 
     active_site = ActiveSite(name[0])
 
@@ -43,8 +44,13 @@ def read_active_site(filepath):
     # open pdb file
     with open(filepath, "r") as f:
         # iterate over each line in the file
+        loop_count = 0
+        prev = '-1'
         for line in f:
-            if line[0:3] != 'TER':
+            curr = line[21:22]
+            if loop_count == 0:
+                prev = curr
+            if line[0:4] == 'ATOM' and prev == curr:
                 # read in an atom
                 atom_type = line[13:17].strip()
                 x_coord = float(line[30:38])
@@ -58,14 +64,17 @@ def read_active_site(filepath):
 
                 # make a new residue if needed
                 if residue_number != r_num:
-                    residue = Residue(residue_type, residue_number)
+                    residue = Residue(residue_type, str(residue_number))
                     r_num = residue_number
 
                 # add the atom to the residue
                 residue.atoms.append(atom)
-
-            else:  # I've reached a TER card
+                prev = curr
+            elif line[0:3] == 'TER':  # I've reached a TER card
                 active_site.residues.append(residue)
+            else:
+                break
+            loop_count += 1
 
     return active_site
 
