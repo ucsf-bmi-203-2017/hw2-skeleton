@@ -3,8 +3,8 @@ import pytest
 import os
 
 @pytest.mark.parametrize("filename,names,numbers", [
-    ("276.pdb", ["HIS", "HIS", "HIS", "HIS", "ASP"], [55, 57, 201, 230, 301]),
-    ("4629.pdb", ["ASP", "THR", "ARG", "SER", "LYS", "TYR", "SER", "ASN", "ASP"], [10, 14, 41, 118, 151, 157, 176, 177, 180]),
+    ("276.pdb", ["HIS", "HIS", "HIS", "HIS", "ASP"], ['55', '57', '201', '230', '301']),
+    ("4629.pdb", ["ASP", "THR", "ARG", "SER", "LYS", "TYR", "SER", "ASN", "ASP"], ['10', '14', '41', '118', '151', '157', '176', '177', '180']),
 ])
 def test_residues(filename, names, numbers):
     filepath = os.path.join("data", filename)
