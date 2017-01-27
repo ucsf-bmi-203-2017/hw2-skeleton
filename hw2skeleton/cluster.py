@@ -1,4 +1,4 @@
-from .utils import Atom, Residue, ActiveSite
+from hw2skeleton.utils import Atom, Residue, ActiveSite
 
 def compute_similarity(site_a, site_b):
     """
