@@ -1,4 +1,11 @@
 from hw2skeleton.utils import Atom, Residue, ActiveSite
+import numpy as np
+
+letters = {'ALA': 'A', 'ARG': 'R', 'ASN': 'N', 'ASP': 'D', 'CYS': 'C',
+           'GLU': 'E', 'GLN': 'Q', 'GLY': 'G', 'HIS': 'H',
+           'ILE': 'I', 'LEU': 'L', 'LYS': 'K', 'MET': 'M', 'PHE': 'F',
+           'PRO': 'P', 'SER': 'S', 'THR': 'T', 'TRP': 'W',
+           'TYR': 'Y', 'VAL': 'V'}
 
 
 def extract_aa_seq(active_site):
@@ -36,9 +43,8 @@ def compute_similarity(site_a, site_b):
 
 
 def cluster_by_partitioning(active_sites):
-"""
+    """
     Cluster a given set of ActiveSite instances using a partitioning method.
-
     Input: a list of ActiveSite instances
     Output: a clustering of ActiveSite instances
             (this is really a list of clusters, each of which is list of
@@ -47,15 +53,12 @@ def cluster_by_partitioning(active_sites):
                as described in 'Clustering by Passing Messages between Data Points',
                Frey and Dueck, Science  16 Feb 2007: Vol. 315, Issue 5814, pp. 972-976
                DOI: 10.1126/science.1136800
-               
                Clusters are based on so-called 'exemplary points', which maximize the
                availability and responsibility of points in their clusters. 
-               
                Here, responsibility can be understood as the likelihood that one point 
                should choose a second point to be exemplary (cluster center) over all other
-               candidate exemplars. 
+               candidate exemplars.
                (likelihood exemplar(a) = b given all other possible exemplars)
-               
                Availability is the likelihood that one point should be chosen by a second
                point to be its exemplar, given all of its existing connections.
                (likelihood exemplar(b) = a given all other members of cluster a)
@@ -77,7 +80,6 @@ def cluster_by_partitioning(active_sites):
         for j in range(sim_mat.shape[0]):
             r[j][ind[j]] = sim_mat[j][ind[j]] - y_2[j]
         r = (1 - damp) * r + damp * r_old
-        
         a_old = a
         r_p = r
         r_p[r_p < 0] = 0
@@ -89,7 +91,6 @@ def cluster_by_partitioning(active_sites):
         for j in range(sim_mat.shape[0]):
             a[j][j] = da[j]
         a = (1 - damp) * a + damp * a_old
-        
     e = r + a
     ind = np.where(np.diagonal(e) != 0)[0]
     k = ind.size
@@ -115,7 +116,7 @@ def cluster_by_partitioning(active_sites):
             clusters.append([])
         clusters[-1].append(active_sites[names.index(as_clusters[i][1])])
         current_cluster = as_clusters[i][0]
-        return clusters
+    return clusters
 
 
 # this function flattens a nested list
@@ -137,7 +138,7 @@ def flatten(l):
 
 
 def cluster_hierarchically(active_sites):
-"""
+    """
     Cluster the given set of ActiveSite instances using a hierarchical algorithm.                                                                  #
 
     Input: a list of ActiveSite instances

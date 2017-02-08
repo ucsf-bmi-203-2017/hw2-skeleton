@@ -24,7 +24,8 @@ def test_partition_clustering():
         active_sites.append(io.read_active_site(filepath))
 
     # update this assertion
-    assert cluster.cluster_by_partitioning(active_sites) == [[276], [4629], [10701]]
+    print(cluster.cluster_by_partitioning(active_sites))
+    assert cluster.cluster_by_partitioning(active_sites) == [[active_sites[0]], [active_sites[1]], [active_sites[2]]]
 
 
 def test_hierarchical_clustering():
